@@ -29,6 +29,7 @@ class RenderInitializer:
     def EndWindow(self):
         curses.endwin()
 
+
 class RenderObject(RenderInitializer):
 
     def drawBorder(self):

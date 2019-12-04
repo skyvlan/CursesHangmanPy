@@ -1,6 +1,7 @@
 import curses
 import GameEngine
 import random
+
 class Game():
 
     def __init__(self):
@@ -101,14 +102,13 @@ class Game():
 
 
 
-
     def setCurrentWord(self, Word):
         self.word = Word.lower()
         self.wordList = list(self.word)
         self.WordLength = len(Word)
         if self.WordLength > 10:
             raise ValueError("Word Length cannot be longer than 10")
-        self.unanswered = list(" _ " * self.WordLength)
+        self.unanswered = list("_" * self.WordLength)
 
 
     def damagePlayer(self):
@@ -141,7 +141,21 @@ class Game():
             self.hangmanState = 7
         if self.health == 0:
             self.hangmanState = 8
+    def checkifAnswerCorrect(self):
+        if self.wordList == self.unanswered:
+            return True
+        else:
+            return False
 
+
+def splitletter(word):
+    tmp = []
+    for i in word:
+            try:
+                ind = tmp.index(i)
+            except:
+                tmp.append(i)
+    return tmp
 
 
 
