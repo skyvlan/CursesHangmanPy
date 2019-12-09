@@ -1,52 +1,91 @@
 import curses
+from curses import textpad
 import os
 import GameHandler
 import time
+R = 0
+WR = 1
+PAIR_HIGHLIGHT = 2
 
 class RenderInitializer:
 
     def __init__(self):
         self.screen = curses.initscr()
         curses.start_color()
-        curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
+        curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
+        curses.init_pair(PAIR_HIGHLIGHT, curses.COLOR_BLACK, curses.COLOR_WHITE)
         curses.noecho()
         curses.cbreak()
         curses.curs_set(0)
         self.screen.keypad(1)
-        self.gamespeed = 15 #default Framerate
+        self.gamespeed = 1000 #default Framerate
         self.yBorder, self.xBorder = self.screen.getmaxyx()
 
     def erase(self):
         time.sleep(1 / self.gamespeed)
-        self.screen.erase()
+        self.screen.clear()
     def refresh(self):
         time.sleep(1/self.gamespeed)
         self.screen.refresh()
     def updateFrame(self):
         time.sleep(1 / self.gamespeed)
         self.screen.refresh()
-        self.screen.erase()
+        self.screen.clear()
     def EndWindow(self):
         curses.endwin()
 
 
 class RenderObject(RenderInitializer):
 
-    def drawBorder(self):
-        self.screen.border('|', '|', '-', '-', '+', '+', '+', '+')
-        time.sleep(1 / self.gamespeed)
-        self.screen.refresh()
-    def drawBorderWr(self):
-        self.screen.border('|', '|', '-', '-', '+', '+', '+', '+')
-    def drawObject(self, Xpos, Ypos, Text):
-        self.screen.addstr(Ypos, Xpos, Text)
-        time.sleep(1 / self.gamespeed)
-        self.screen.refresh()
-    def drawObjectWr(self, Xpos, Ypos, Text):
-        self.screen.addstr(Ypos, Xpos, Text)
+    def drawBorder(self, Refresh=R):
+        if Refresh == R:
+            self.screen.border('|', '|', '-', '-', '+', '+', '+', '+')
+            time.sleep(1 / self.gamespeed)
+            self.screen.refresh()
+        elif Refresh == WR:
+            self.screen.border('|', '|', '-', '-', '+', '+', '+', '+')
+        else:
+            raise(ValueError, "Only WR and R are allowed")
 
+    def drawObject(self, Xpos, Ypos, Text, Refresh=R):
+        if Refresh == R:
+            self.screen.addstr(Ypos, Xpos, Text)
+            time.sleep(1 / self.gamespeed)
+            self.screen.refresh()
+        elif Refresh == WR:
+            self.screen.addstr(Ypos, Xpos, Text)
+        else:
+            raise(ValueError, "Only WR and R are allowed")
 
+    def enableColor(self, COL, Refresh=R):
+        if Refresh == R:
+            self.screen.attron(curses.color_pair(COL))
+            time.sleep(1 / self.gamespeed)
+            self.screen.refresh()
+        elif Refresh == WR:
+            self.screen.attron(curses.color_pair(COL))
+        else:
+            raise (ValueError, "Only WR and R are allowed")
 
+    def disableColor(self, COL, Refresh=R):
+        if Refresh == R:
+            self.screen.attroff(curses.color_pair(COL))
+            time.sleep(1 / self.gamespeed)
+            self.screen.refresh()
+        elif Refresh == WR:
+            self.screen.attroff(curses.color_pair(COL))
+        else:
+            raise (ValueError, "Only WR and R are allowed")
+
+    def drawRect(self, X, Y, Width, Length, Refresh=R):
+        if Refresh == R:
+            textpad.rectangle(self.screen, Y, X, Y + Length, X + Width)
+            time.sleep(1 / self.gamespeed)
+            self.screen.refresh()
+        elif Refresh == WR:
+            textpad.rectangle(self.screen, Y, X, Y + Length, X + Width)
+        else:
+            raise (ValueError, "Only WR and R are allowed")
 
 class InputHandler(RenderInitializer):
 

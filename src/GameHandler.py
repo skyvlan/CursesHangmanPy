@@ -99,6 +99,7 @@ class Game():
         self.health = 14
         self.difficulty = 1 #Default (Easy) = 1, Medium = 2, Hard = 3, Hardcore = 4
         self.hangmanState = 0
+        self.score = 0
 
 
 
