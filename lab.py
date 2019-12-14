@@ -1,5 +1,6 @@
 import time
 import random
+import FileHandler
 def dev(a,b):
     try:
      print("Hasil" , a/b)
@@ -22,13 +23,12 @@ def selectionsort(aList):
         aList[i]=aList[posisiMax]
         aList[posisiMax]=temp
 
+w = 0
+randList = []
+while(w < 5):
+    randomWord = FileHandler.getWord()
+    randList.append(randomWord)
+    time.sleep(1)
+    w+=1
+print(randList)
 
-
-a = [32,55,225,67,32,12,4,97]
-res = [random.randrange(1, 1024, 1) for i in range(2048)]
-startTime = time.time()
-selectionsort(res)
-endTime = time.time()
-execTime = int((endTime - startTime) * 1000)
-print(execTime)
-print(res)

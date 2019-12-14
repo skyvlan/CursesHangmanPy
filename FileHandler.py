@@ -22,8 +22,8 @@ def splitletter(word):
             tmp.append(i)
     return tmp
 
-def readsoal():
+def getWord():
     with open("soalhang.txt","r") as baca:
         listOfSoal = baca.readlines()
         choice = random.choice(listOfSoal)
-        return(choice)
+        return(choice.rstrip())

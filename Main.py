@@ -67,13 +67,19 @@ def Game():
     debugObj = GameEngine.RenderObject()
     hangmanState = GameEngine.RenderObject()
     GameObject = GameHandler.Game()
+    score = GameEngine.RenderObject()
+    hangmanBox = GameEngine.RenderObject()
     while(GameObject.health != 0):
-        GameObject.setCurrentWord("Test")
+        currentWord = FileHandler.getWord()
+        GameObject.setCurrentWord(currentWord)
         UnansweredWord = GameObject.unanswered
         while(GameObject.checkifAnswerCorrect() == False):
             border.drawBorder(GameEngine.WR)
+            HighscoreStr = "SCORE : " + str(GameObject.score)
             UnansweredStr = " ".join(UnansweredWord)
-            Hangman.drawObject((renderer.xBorder//2) - 20, (renderer.yBorder//2) - 5, GameObject.hangman[GameObject.hangmanState], GameEngine.WR)
+            Hangman.drawObject(50, (renderer.yBorder//2) - 5, GameObject.hangman[GameObject.hangmanState], GameEngine.WR)d
+            #hangmanBox.drawRect((renderer.xBorder//2), (renderer.yBorder//2) - 5,)
+            score.drawObject(renderer.xBorder//2 - len(HighscoreStr)//2, 1, HighscoreStr, GameEngine.WR)
             health.drawObject(2,2, str(GameObject.health), GameEngine.WR)
             hangmanState.drawObject(2,3, str(GameObject.hangmanState), GameEngine.WR)
             Answer.drawObject((renderer.xBorder // 2), (renderer.yBorder // 2) - 5, UnansweredStr.upper(), GameEngine.WR)
@@ -85,9 +91,14 @@ def Game():
                 GameObject.damagePlayer()
             for j in index:
                 UnansweredWord[j] = ans
+                GameObject.score += len(ans) * 10
+            if GameObject.health == 0:
+                break
             debugObj.drawObject(2, 5, str(UnansweredWord), GameEngine.WR)
+
             renderer.refresh()
             renderer.updateFrame()
+        GameObject.score += 100
 
 
 def GameOver():
@@ -96,7 +107,8 @@ def GameOver():
     GameOver = GameEngine.RenderObject()
     border.drawBorder()
     GameOver.drawObject((renderer.xBorder//2) - len("Game Over!"), renderer.yBorder//2, "Game Over!")
-    time.sleep(10)
+    time.sleep(5)
+    Leaderboard()
 def Leaderboard():
     renderer.erase()
     border = GameEngine.RenderObject()
@@ -112,7 +124,7 @@ def Leaderboard():
 select = MainMenu()
 if select == 0:
     Game()
-    Leaderboard()
+    GameOver()
 
 elif select == 1:
     exit()
