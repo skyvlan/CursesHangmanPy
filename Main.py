@@ -4,10 +4,12 @@ import time
 import GameEngine
 import GameHandler
 import FileHandler
-
+import random
+import string
 
 renderer = GameEngine.RenderInitializer()
 menuSelection = ["Play Game", "Add Word", "Leaderboard", "Exit"]
+
 def printMenu(selected_row):
     renderer.erase()
     dbgText = GameEngine.RenderObject()
@@ -16,12 +18,12 @@ def printMenu(selected_row):
         x = renderer.xBorder//2 - len(row)//2
         y = (renderer.yBorder//2 - len(menuSelection)//2 + i) + 3
         if i == selected_row:
-            dbgText.drawObject(2, y+1, "Row:{} X:{} Y:{}".format(row, x, y))
+            #dbgText.drawObject(2, y+1, "Row:{} X:{} Y:{}".format(row, x, y))
             selection.enableColor(GameEngine.PAIR_HIGHLIGHT, GameEngine.WR)
             selection.drawObject(x,y, row,GameEngine.WR)
             selection.disableColor(GameEngine.PAIR_HIGHLIGHT, GameEngine.WR)
         else:
-            dbgText.drawObject(2, y + 1, "Row:{} X:{} Y:{}".format(row, x, y))
+           # dbgText.drawObject(2, y + 1, "Row:{} X:{} Y:{}".format(row, x, y))
             selection.drawObject(x, y, row, GameEngine.WR)
 
     renderer.refresh()
@@ -69,7 +71,7 @@ def Game():
     GameObject = GameHandler.Game()
     score = GameEngine.RenderObject()
     hangmanBox = GameEngine.RenderObject()
-    while(GameObject.health != 0):
+    while(GameObject.health > 0):
         currentWord = FileHandler.getWord()
         GameObject.setCurrentWord(currentWord)
         UnansweredWord = GameObject.unanswered
@@ -77,8 +79,10 @@ def Game():
             border.drawBorder(GameEngine.WR)
             HighscoreStr = "SCORE : " + str(GameObject.score)
             UnansweredStr = " ".join(UnansweredWord)
-            Hangman.drawObject(50, (renderer.yBorder//2) - 5, GameObject.hangman[GameObject.hangmanState], GameEngine.WR)d
-            #hangmanBox.drawRect((renderer.xBorder//2), (renderer.yBorder//2) - 5,)
+            hangmanArt = GameObject.hangman[GameObject.hangmanState].splitlines()
+            for yPos, lines in enumerate(hangmanArt):
+                Hangman.drawObject(15, (renderer.yBorder//2) - 4 + yPos, lines, GameEngine.WR)
+            hangmanBox.drawRect(28, (renderer.yBorder//2)-4 , 12, 10)
             score.drawObject(renderer.xBorder//2 - len(HighscoreStr)//2, 1, HighscoreStr, GameEngine.WR)
             health.drawObject(2,2, str(GameObject.health), GameEngine.WR)
             hangmanState.drawObject(2,3, str(GameObject.hangmanState), GameEngine.WR)
@@ -92,21 +96,36 @@ def Game():
             for j in index:
                 UnansweredWord[j] = ans
                 GameObject.score += len(ans) * 10
-            if GameObject.health == 0:
-                break
             debugObj.drawObject(2, 5, str(UnansweredWord), GameEngine.WR)
-
             renderer.refresh()
             renderer.updateFrame()
+            if(GameObject.health < 0):
+                time.sleep(5)
+                return GameObject.score
+                break
         GameObject.score += 100
 
 
-def GameOver():
+
+
+
+def GameOver(score):
     renderer.erase()
     border = GameEngine.RenderObject()
     GameOver = GameEngine.RenderObject()
+    yourName = GameEngine.InputHandler()
     border.drawBorder()
-    GameOver.drawObject((renderer.xBorder//2) - len("Game Over!"), renderer.yBorder//2, "Game Over!")
+    scoreStr = "SCORE : {}".format(score)
+    GameOver.drawObject((renderer.xBorder//2) - len("Game Over!")//2, renderer.yBorder//2, "Game Over!")
+    GameOver.drawObject((renderer.xBorder // 2) - len(scoreStr) // 2, (renderer.yBorder // 2)+1, scoreStr)
+    GameOver.drawObject((renderer.xBorder // 2) - len("Your Name:") // 2, (renderer.yBorder // 2) + 2, "Your Name: ")
+    curses.echo()
+    curses.curs_set(1)
+    name = yourName.getStringInput(((renderer.xBorder // 2) + len("Your Name:")//2) + 1 ,  (renderer.yBorder // 2) + 2)
+    curses.curs_set(0)
+    curses.noecho()
+
+    FileHandler.saveScore(name.decode("utf-8"), score)
     time.sleep(5)
     Leaderboard()
 def Leaderboard():
@@ -123,8 +142,8 @@ def Leaderboard():
 
 select = MainMenu()
 if select == 0:
-    Game()
-    GameOver()
+    score = Game()
+    GameOver(score)
 
 elif select == 1:
     exit()

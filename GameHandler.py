@@ -107,22 +107,13 @@ class Game():
         self.word = Word.lower()
         self.wordList = list(self.word)
         self.WordLength = len(Word)
-        if self.WordLength > 10:
-            raise ValueError("Word Length cannot be longer than 10")
+        if self.WordLength > 16:
+            raise ValueError("Word Length cannot be longer than 16")
         self.unanswered = list("_" * self.WordLength)
 
 
     def damagePlayer(self):
-        if self.difficulty == 1:
-            self.health -= 2
-        elif self.difficulty == 2:
-            self.health -= 4
-        elif self.difficulty == 3:
-            self.health -= 7
-        elif self.difficulty == 4:
-            self.health -= 14
-        if self.health < 0:
-            self.health = 0
+        self.health -= 2
 
         if self.health == 14:
             self.hangmanState = 0

@@ -92,6 +92,12 @@ class InputHandler(RenderInitializer):
     def getInput(self):
         return self.screen.getch()
 
+    def getStringInput(self,x,y): # please call curses.echo() before calling
+        string = self.screen.getstr(y,x,10) #max length of string is 16
+        return string
+
+
+
     # def drawMainMenu(self):
     #     escape = False
     #     inGame = False

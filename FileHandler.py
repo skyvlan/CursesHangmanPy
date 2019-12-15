@@ -1,29 +1,28 @@
 import random
-def addsoal(x):
-    with open("soalhang.txt","r") as soal:
-        f = soal.read()
-        soal.close()
-    with open("soalhang.txt","w") as soal:
-        soal.write(f)
-        soal.write(x)
-        soal.write("\n")
-        soal.close()
-    with open("soalhang.txt","r") as soal:
-        f = soal.read()
-        soal.close()
-    return(f)
 
-def splitletter(word):
-    tmp=[]
-    for i in word:
-        try:
-            ind = tmp.index(i)
-        except:
-            tmp.append(i)
-    return tmp
+def saveScore(name,score):
+    with open("scores.csv", "a") as file:
+        file.write("{},{}".format(str(name),str(score)))
+        file.write("\n")
+        file.close()
+
+
+
+def readScore():
+    with open("scores.csv", "r") as file:
+        scoreList = file.readlines()
+        file.close()
+    return scoreList
+
+
+def addWord(soal):
+    with open("soalhang.txt", "a") as file:
+        file.write(soal)
+        file.close()
 
 def getWord():
     with open("soalhang.txt","r") as baca:
         listOfSoal = baca.readlines()
         choice = random.choice(listOfSoal)
-        return(choice.rstrip())
+        baca.close()
+    return(choice.rstrip())
