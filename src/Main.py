@@ -46,12 +46,15 @@ def MainMenu():
     logoDrawer = GameEngine.RenderObject()
     border = GameEngine.RenderObject()
     box = GameEngine.RenderObject()
+    copyrightText = "© 2019 Kelompok KebalSP - LD01 -  BINUS University @Bandung"
+    copyrightDrawer = GameEngine.RenderObject()
     border.drawBorder()
     while(True):
         box.drawRect(54, 15, 12, 5, GameEngine.WR)
         border.drawBorder(GameEngine.WR)
         for yPos, lines in enumerate(title):
             logoDrawer.drawObject((renderer.xBorder//2) - 25, 5+yPos, lines, GameEngine.WR)
+        copyrightDrawer.drawObject((renderer.xBorder//2) - len(copyrightText)//2, renderer.yBorder-2, copyrightText )
         key = input.getInput()
         if key == curses.KEY_UP and row > 0:
             row -= 1
@@ -223,6 +226,8 @@ def main():
     elif select == 2:
         Leaderboard()
     elif select == 3:
+        curses.endwin()
+        print("Thanks for playing!")
         exit()
 
 main()
