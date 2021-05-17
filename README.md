@@ -1,4 +1,4 @@
 # CursesHangmanPy
-WIP Hangman in Python using Curses for group Project
+Hangman in Python using Curses for group Project
 
-idk how to use Python lmao
+what an ugly way to do it but we're done!
